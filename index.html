@@ -88,16 +88,150 @@ const $=x=>document.getElementById(x), today=()=>new Date().toISOString().slice(
 function rp(n){return new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(n)}
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
 function save(){localStorage.setItem(KS,JSON.stringify(sales));localStorage.setItem(KE,JSON.stringify(exps));localStorage.setItem(KC,JSON.stringify(customers))}
-function login(){if($("user").value.trim()=="admin"&&$("pass").value=="123456"){sessionStorage.rv="1";start()}else alert("Username atau password salah.")}
+async function login(){
+
+  let email=$("user").value.trim();
+
+  let password=$("pass").value;
+
+  if(!email||!password)
+
+    return alert("Masukkan email dan password.");
+
+  const {data,error}=await supabaseClient.auth.signInWithPassword({
+
+    email:email,
+
+    password:password
+
+  });
+
+  if(error)
+
+    return alert("Login gagal: "+error.message);
+
+  sessionStorage.rv="1";
+
+  start();
+
+}
 function start(){$("login").classList.add("hidden");$("app").classList.remove("hidden");$("date").value=today();$("edate").value=today();$("month").value=today().slice(0,7);customers.sort();renderCustomers();calc();render()}
-function logout(){sessionStorage.removeItem("rv");location.reload()}
+async function logout(){
+
+  await supabaseClient.auth.signOut();
+
+  sessionStorage.removeItem("rv");
+
+  location.reload();
+
+}
 function toggleNew(){$("newBox").classList.toggle("hidden");$("newName").focus()}
 function addCustomer(){let n=$("newName").value.trim();if(!n)return alert("Masukkan nama customer.");if(customers.some(x=>x.toLowerCase()==n.toLowerCase()))return alert("Customer sudah ada.");customers.push(n);customers.sort((a,b)=>a.localeCompare(b,"id"));save();$("newName").value="";$("newBox").classList.add("hidden");renderCustomers();$("customer").value=n}
 function removeCustomer(i){if(confirm("Hapus customer dari daftar tetap? Riwayat penjualan tetap aman.")){customers.splice(i,1);save();renderCustomers()}}
 function renderCustomers(){$("customer").innerHTML='<option value="">Pilih customer...</option>'+customers.map(x=>`<option>${esc(x)}</option>`).join("");$("customers").innerHTML=customers.length?customers.map((x,i)=>`<span class="chip">${esc(x)} <button onclick="removeCustomer(${i})">×</button></span>`).join(""):'<span class="small">Belum ada customer.</span>'}
 function calc(){let a=+$("q5").value||0,b=+$("q3").value||0,m=+$("qm").value||0;$("tq").value=a+b+m;$("ti").value=rp(a*P5+b*P3+m*PM)}
-function sale(){let d=$("date").value,c=$("customer").value,a=+$("q5").value||0,b=+$("q3").value||0,m=+$("qm").value||0;if(!d||!c)return alert("Pilih tanggal dan customer.");if(!a&&!b&&!m)return alert("Isi minimal satu voucher.");sales.push({id:Date.now(),date:d,customer:c,q5:a,q3:b,qm:m,totalQty:a+b+m,total:a*P5+b*P3+m*PM});save();$("q5").value=$("q3").value=$("qm").value=0;calc();render()}
-function expense(){let d=$("edate").value,n=$("note").value.trim(),a=+$("amount").value||0;if(!d||!n||a<=0)return alert("Lengkapi tanggal, keterangan, dan jumlah.");exps.push({id:Date.now(),date:d,note:n,amount:a});save();$("note").value="";$("amount").value="";render()}
+async function sale(){
+
+  let d=$("date").value,
+
+      c=$("customer").value,
+
+      a=+$("q5").value||0,
+
+      b=+$("q3").value||0,
+
+      m=+$("qm").value||0;
+
+  if(!d||!c) return alert("Pilih tanggal dan customer.");
+
+  if(!a&&!b&&!m) return alert("Isi minimal satu voucher.");
+
+  const {data:{user},error:userError}=await supabaseClient.auth.getUser();
+
+  if(userError||!user) return alert("Sesi login Supabase belum aktif.");
+
+  const row={
+
+    id:Date.now(),
+
+    user_id:user.id,
+
+    date:d,
+
+    customer:c,
+
+    q5:a,
+
+    q3:b,
+
+    qm:m,
+
+    totalQty:a+b+m,
+
+    total:a*P5+b*P3+m*PM
+
+  };
+
+  const {error}=await supabaseClient.from("sales").insert(row);
+
+  if(error) return alert("Gagal menyimpan penjualan: "+error.message);
+
+  sales.push(row);
+
+  save();
+
+  $("q5").value=$("q3").value=$("qm").value=0;
+
+  calc();
+
+  render();
+
+}
+async function expense(){
+
+  let d=$("edate").value,
+
+      n=$("note").value.trim(),
+
+      a=+$("amount").value||0;
+
+  if(!d||!n||a<=0)
+
+    return alert("Lengkapi tanggal, keterangan, dan jumlah.");
+
+  const {data:{user},error:userError}=await supabaseClient.auth.getUser();
+
+  if(userError||!user) return alert("Sesi login Supabase belum aktif.");
+
+  const row={
+
+    id:Date.now(),
+
+    user_id:user.id,
+
+    date:d,
+
+    note:n,
+
+    amount:a
+
+  };
+
+  const {error}=await supabaseClient.from("expenses").insert(row);
+
+  if(error) return alert("Gagal menyimpan pengeluaran: "+error.message);
+
+  exps.push(row);
+
+  save();
+
+  $("note").value="";
+
+  $("amount").value="";
+
+  render();
+
+}
 function delSale(id){sales=sales.filter(x=>x.id!==id);save();render()}function delExp(id){exps=exps.filter(x=>x.id!==id);save();render()}
 function render(){let mo=$("month").value,q=($("search").value||"").toLowerCase(),ss=sales.filter(x=>(!mo||x.date.startsWith(mo))&&x.customer.toLowerCase().includes(q)),ee=exps.filter(x=>!mo||x.date.startsWith(mo));
 $("sales").innerHTML=ss.length?ss.map(x=>`<tr><td>${x.date}</td><td><span class="badge">${esc(x.customer)}</span></td><td>${x.q5}</td><td>${x.q3}</td><td>${x.qm||0}</td><td>${x.totalQty}</td><td>${rp(x.total)}</td><td><button class="btn r" style="padding:6px 9px" onclick="delSale(${x.id})">Hapus</button></td></tr>`).join(""):'<tr><td colspan="8" class="empty">Belum ada penjualan pada bulan ini.</td></tr>';
