@@ -148,7 +148,9 @@ async function sale(){
 
   const {data:{user},error:userError}=await supabaseClient.auth.getUser();
 
-  if(userError||!user) return alert("Sesi login Supabase belum aktif.");
+  if(userError||!user)
+
+    return alert("Sesi login Supabase belum aktif.");
 
   const rows=[];
 
@@ -160,7 +162,7 @@ async function sale(){
 
       user_id:user.id,
 
-      costumer_id:c,
+      customer_id:c,
 
       voucher_type_id:6,
 
@@ -169,6 +171,8 @@ async function sale(){
       jumlah:a,
 
       harga:4500,
+
+      total:a*4500,
 
       keterangan:"Voucher 5000"
 
@@ -184,7 +188,7 @@ async function sale(){
 
       user_id:user.id,
 
-      costumer_id:c,
+      customer_id:c,
 
       voucher_type_id:5,
 
@@ -193,6 +197,8 @@ async function sale(){
       jumlah:b,
 
       harga:2500,
+
+      total:b*2500,
 
       keterangan:"Voucher 3000"
 
@@ -208,7 +214,7 @@ async function sale(){
 
       user_id:user.id,
 
-      costumer_id:c,
+      customer_id:c,
 
       voucher_type_id:1,
 
@@ -218,15 +224,23 @@ async function sale(){
 
       harga:50000,
 
+      total:m*50000,
+
       keterangan:"Voucher Bulanan"
 
     });
 
   }
 
-  const {error}=await supabaseClient.from("sales").insert(rows);
+  const {error}=await supabaseClient
 
-  if(error) return alert("Gagal menyimpan penjualan: "+error.message);
+    .from("sales")
+
+    .insert(rows);
+
+  if(error)
+
+    return alert("Gagal menyimpan penjualan: "+error.message);
 
   sales.push({
 
@@ -252,11 +266,17 @@ async function sale(){
 
   save();
 
-  $("q5").value=$("q3").value=$("qm").value=0;
+  $("q5").value=0;
+
+  $("q3").value=0;
+
+  $("qm").value=0;
 
   calc();
 
   render();
+
+  alert("Penjualan berhasil disimpan.");
 
 }
 async function expense(){
