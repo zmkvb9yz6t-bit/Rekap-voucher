@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rekap Voucher • Personal</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#172033;--muted:#718096;--line:#e4e9f0;--primary:#5b5bd6;--primary2:#7676ee;--green:#059669;--red:#dc3545;--shadow:0 8px 28px rgba(28,39,64,.08)}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:linear-gradient(180deg,#f7f8ff 0,#f4f7fb 45%,#eef3f8 100%);color:var(--ink)}
+.hidden{display:none!important}.login{min-height:100vh;display:grid;place-items:center;padding:22px;background:radial-gradient(circle at top right,#8585ff 0,transparent 35%),linear-gradient(135deg,#242451,#5151a7)}
+.card{background:var(--card);border-radius:24px;box-shadow:0 20px 55px rgba(0,0,0,.2);padding:30px}.login .card{width:min(420px,100%)}.logo{font-size:40px;margin-bottom:8px}h1{font-size:27px;margin:0 0 8px}h2{font-size:20px;margin:0 0 5px}p{color:var(--muted)}input,select,button{font:inherit}input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;margin-top:6px;background:#fff;color:var(--ink);outline:none}input:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px #5b5bd61a}input[readonly]{background:#f2f4f8}label{display:block;font-size:13px;font-weight:700;margin-top:12px}.btn{border:0;border-radius:12px;padding:11px 15px;background:var(--primary);color:#fff;font-weight:750;cursor:pointer;box-shadow:0 4px 12px #5b5bd633}.btn:hover{background:var(--primary2)}.btn.secondary{background:#697586}.btn.green{background:var(--green)}.btn.danger{background:var(--red)}.btn.light{background:#eef0ff;color:#4443a8;box-shadow:none}.login .btn{width:100%;margin-top:18px}.hint,.small{font-size:12px;color:var(--muted)}
+header{background:rgba(24,28,55,.96);color:#fff;padding:15px 22px;display:flex;justify-content:space-between;align-items:center;gap:12px;position:sticky;top:0;z-index:5;box-shadow:0 5px 20px #0002}
+.brand{display:flex;gap:10px;align-items:center}.brandIcon{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#7777f2,#4b4bc2);display:grid;place-items:center;font-size:22px}.brand b{font-size:17px}.brand span{font-size:12px;opacity:.7;display:block}
+main{max-width:1250px;margin:auto;padding:22px}.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}.stat{background:var(--card);border:1px solid #fff;border-radius:17px;padding:17px;box-shadow:var(--shadow)}.stat .label{color:var(--muted);font-size:13px}.stat .num{font-size:23px;font-weight:850;margin-top:7px}.greenText{color:var(--green)}.redText{color:var(--red)}
+.panel{background:var(--card);border-radius:18px;padding:19px;margin-top:18px;box-shadow:var(--shadow);border:1px solid #fff}.head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.formgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-items:end}.voucherBox{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:13px}.vcard{border:1px solid var(--line);background:linear-gradient(145deg,#fafaff,#f7f9fc);border-radius:15px;padding:14px}.vtitle{font-weight:850}.price{font-size:12px;color:var(--muted);margin-top:3px}.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.search{max-width:220px;margin:0}.customerRow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}.tableWrap{overflow:auto}table{width:100%;border-collapse:collapse;margin-top:12px}th,td{padding:10px 9px;border-bottom:1px solid var(--line);text-align:left;font-size:13px;white-space:nowrap}th{background:#f7f8fc;color:#596273}tbody tr:hover{background:#fafbff}.empty{text-align:center;color:var(--muted);padding:25px}.badge{display:inline-block;padding:4px 8px;border-radius:99px;background:#ececff;color:#4a49a9;font-size:11px;font-weight:800}.customerList{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.chip{background:#f1f3f8;border:1px solid var(--line);padding:7px 10px;border-radius:999px;font-size:12px;font-weight:700;display:flex;gap:7px;align-items:center}.chip button{border:0;background:transparent;color:#9aa1ad;cursor:pointer;padding:0}
+.summary{background:linear-gradient(135deg,#f0f0ff,#fafaff);border:1px solid #e3e3ff;border-radius:15px;padding:15px;margin-top:13px}.summaryGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.summaryItem b{display:block;font-size:17px;margin-top:4px}
+@media(max-width:950px){.grid{grid-template-columns:repeat(2,1fr)}.formgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.grid,.formgrid,.voucherBox,.summaryGrid{grid-template-columns:1fr}.customerRow{grid-template-columns:1fr}main{padding:12px}header{align-items:flex-start;flex-direction:column}.search{max-width:none}}
+</style>
+</head>
+<body>
+
+<div id="loginPage" class="login">
+<div class="card">
+<div class="logo">📊</div><h1>Rekap Voucher</h1>
+<p>Kelola voucher, customer, pendapatan, dan pengeluaran dalam satu tempat.</p>
+<label>Username<input id="username" autocomplete="username"></label>
+<label>Password<input id="password" type="password" autocomplete="current-password"></label>
+<button class="btn" onclick="login()">Masuk ke Aplikasi</button>
+<div class="hint">Login awal: <b>admin</b> / <b>123456</b></div>
+</div></div>
+
+<div id="app" class="hidden">
+<header>
+<div class="brand"><div class="brandIcon">🎟️</div><div><b>Rekap Voucher</b><span>Penjualan • Pendapatan • Pengeluaran</span></div></div>
+<div class="actions"><span id="userLabel"></span><button class="btn secondary" onclick="logout()">Keluar</button></div>
+</header>
+<main>
+<div class="grid">
+<div class="stat"><div class="label">Total Voucher</div><div class="num" id="sQty">0</div></div>
+<div class="stat"><div class="label">Voucher Rp5.000</div><div class="num" id="s5">0</div></div>
+<div class="stat"><div class="label">Voucher Rp3.000</div><div class="num" id="s3">0</div></div>
+<div class="stat"><div class="label">Total Pendapatan</div><div class="num" id="sIncome">Rp0</div></div>
+<div class="stat"><div class="label">Sisa Bersih</div><div class="num greenText" id="sNet">Rp0</div></div>
+</div>
+
+<section class="panel">
+<div class="head"><div><h2>🧾 Catat Penjualan</h2><div class="small">Satu customer dapat dicatat untuk voucher Rp5.000 dan Rp3.000 sekaligus.</div></div></div>
+<div class="formgrid">
+<label>Tanggal<input id="saleDate" type="date"></label>
+<label style="grid-column:span 2">Customer
+<div class="customerRow"><select id="customerSelect"></select><button class="btn light" onclick="showCustomerBox()">+ Customer</button></div>
+</label><div></div>
+</div>
+<div class="voucherBox">
+<div class="vcard"><div class="vtitle">Voucher Rp5.000</div><div class="price">Harga jual dikunci Rp4.500 / voucher</div><label>Jumlah<input id="q5" type="number" min="0" value="0" oninput="calc()"></label></div>
+<div class="vcard"><div class="vtitle">Voucher Rp3.000</div><div class="price">Harga jual dikunci Rp2.500 / voucher</div><label>Jumlah<input id="q3" type="number" min="0" value="0" oninput="calc()"></label></div>
+</div>
+<div class="formgrid" style="margin-top:12px">
+<label>Total Voucher<input id="saleQty" readonly></label>
+<label>Total Pendapatan<input id="saleTotal" readonly></label><div></div>
+<div><button class="btn green" onclick="addSale()">+ Simpan Penjualan</button></div>
+</div>
+<div id="newCustomer" class="hidden" style="margin-top:12px;background:#f7f8ff;padding:12px;border-radius:13px">
+<div class="small">Tambahkan customer baru. Nama akan <b>tetap tersimpan setiap bulan</b> sampai Anda menghapusnya.</div>
+<div class="customerRow"><input id="newCustomerName" placeholder="Nama customer"><button class="btn" onclick="addCustomer()">Simpan Customer</button></div>
+</div>
+</section>
+
+<section class="panel">
+<div class="head"><div><h2>👥 Daftar Customer Tetap</h2><div class="small">Daftar ini tidak hilang saat bulan berganti.</div></div></div>
+<div id="customerList" class="customerList"></div>
+</section>
+
+<section class="panel">
+<div class="head"><div><h2>💸 Catatan Pengeluaran</h2><div class="small">Catat setiap pengeluaran dengan keterangannya.</div></div></div>
+<div class="formgrid">
+<label>Tanggal<input id="expDate" type="date"></label>
+<label style="grid-column:span 2">Keterangan<input id="expNote" placeholder="Contoh: bensin, makan, pulsa"></label>
+<label>Jumlah<input id="expAmount" type="number" min="0" placeholder="0"></label>
+</div>
+<div style="margin-top:12px"><button class="btn" onclick="addExpense()">+ Simpan Pengeluaran</button></div>
+</section>
+
+<section class="panel">
+<div class="head">
+<div><h2>📋 Rekapan Bulanan</h2><div class="small">Pilih bulan untuk melihat rekapan. Data customer tetap tersimpan antarbulan.</div></div>
+<div class="actions"><label style="margin:0">Bulan<input id="monthFilter" type="month" onchange="render()" style="width:155px;margin:0"></label><input class="search" id="search" placeholder="Cari customer..." oninput="render()"></div>
+</div>
+<div class="summary"><div class="summaryGrid">
+<div class="summaryItem"><span class="small">Voucher 5K</span><b id="m5">0</b></div>
+<div class="summaryItem"><span class="small">Voucher 3K</span><b id="m3">0</b></div>
+<div class="summaryItem"><span class="small">Pendapatan</span><b id="mIncome">Rp0</b></div>
+<div class="summaryItem"><span class="small">Pengeluaran</span><b id="mExp">Rp0</b></div>
+</div></div>
+<div class="tableWrap"><table><thead><tr><th>Tanggal</th><th>Customer</th><th>Voucher 5K</th><th>Voucher 3K</th><th>Total</th><th>Pendapatan</th><th>Aksi</th></tr></thead><tbody id="salesBody"></tbody></table></div>
+</section>
+
+<section class="panel">
+<div class="head"><h2>🧮 Pengeluaran Bulanan</h2></div>
+<div class="tableWrap"><table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Jumlah</th><th>Aksi</th></tr></thead><tbody id="expBody"></tbody></table></div>
+</section>
+
+<section class="panel">
+<h2>📥 Download Rekapan</h2><p class="small">Download berisi detail penjualan, detail pengeluaran, total voucher, pendapatan, pengeluaran, dan sisa bersih sesuai bulan yang dipilih.</p>
+<div class="actions">
+<button class="btn green" onclick="downloadFull()">Download Rekapan Lengkap</button>
+<button class="btn secondary" onclick="downloadSales()">Download Penjualan</button>
+<button class="btn secondary" onclick="downloadExpenses()">Download Pengeluaran</button>
+</div>
+</section>
+</main></div>
+
+<script>
+const SK="rv_sales_v3", EK="rv_exp_v3", CK="rv_customers_v3", P5=4500, P3=2500;
+let sales=JSON.parse(localStorage.getItem(SK)||"[]"), expenses=JSON.parse(localStorage.getItem(EK)||"[]"), customers=JSON.parse(localStorage.getItem(CK)||"[]");
+const $=id=>document.getElementById(id), today=()=>new Date().toISOString().slice(0,10), monthNow=()=>today().slice(0,7);
+function rupiah(n){return new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(n)}
+function save(){localStorage.setItem(SK,JSON.stringify(sales));localStorage.setItem(EK,JSON.stringify(expenses));localStorage.setItem(CK,JSON.stringify(customers))}
+function login(){if($("username").value.trim()==="admin"&&$("password").value==="123456"){sessionStorage.logged="1";show()}else alert("Username atau password salah.")}
+function show(){ $("loginPage").classList.add("hidden");$("app").classList.remove("hidden");$("userLabel").textContent="👤 admin";$("saleDate").value=today();$("expDate").value=today();$("monthFilter").value=monthNow();renderCustomers();calc();render()}
+function logout(){sessionStorage.removeItem("logged");location.reload()}
+function showCustomerBox(){$("newCustomer").classList.toggle("hidden");$("newCustomerName").focus()}
+function addCustomer(){
+ const n=$("newCustomerName").value.trim(); if(!n)return alert("Masukkan nama customer.");
+ if(customers.some(x=>x.toLowerCase()===n.toLowerCase()))return alert("Customer sudah ada.");
+ customers.push(n);customers.sort((a,b)=>a.localeCompare(b,"id"));save();$("newCustomerName").value="";$("newCustomer").classList.add("hidden");renderCustomers();$("customerSelect").value=n;
+}
+function removeCustomer(i){if(confirm("Hapus customer dari daftar tetap? Riwayat penjualan tidak akan dihapus.")){customers.splice(i,1);save();renderCustomers()}}
+function renderCustomers(){
+ $("customerSelect").innerHTML='<option value="">Pilih customer...</option>'+customers.map(c=>`<option>${esc(c)}</option>`).join("");
+ $("customerList").innerHTML=customers.length?customers.map((c,i)=>`<span class="chip">${esc(c)} <button onclick="removeCustomer(${i})" title="Hapus">×</button></span>`).join(""):'<span class="small">Belum ada customer tetap. Tambahkan saat mencatat penjualan.</span>';
+}
+function calc(){let a=+($("q5").value||0),b=+($("q3").value||0);$("saleQty").value=a+b;$("saleTotal").value=rupiah(a*P5+b*P3)}
+function addSale(){
+ let date=$("saleDate").value,c=$("customerSelect").value,a=Math.max(0,+($("q5").value||0)),b=Math.max(0,+($("q3").value||0));
+ if(!date||!c)return alert("Pilih tanggal dan customer.");
+ if(!a&&!b)return alert("Isi minimal satu jumlah voucher.");
+ sales.push({id:Date.now(),date,customer:c,q5:a,q3:b,totalQty:a+b,total:a*P5+b*P3});save();$("q5").value=0;$("q3").value=0;calc();render();
+}
+function addExpense(){
+ let date=$("expDate").value,n=$("expNote").value.trim(),a=+($("expAmount").value||0);
+ if(!date||!n||a<=0)return alert("Lengkapi tanggal, keterangan, dan jumlah.");
+ expenses.push({id:Date.now(),date,note:n,amount:a});save();$("expNote").value="";$("expAmount").value="";render();
+}
+function delSale(id){sales=sales.filter(x=>x.id!==id);save();render()}
+function delExp(id){expenses=expenses.filter(x=>x.id!==id);save();render()}
+function filtered(){
+ let m=$("monthFilter").value,s=($("search").value||"").toLowerCase();
+ return sales.filter(x=>(!m||x.date.startsWith(m))&&x.customer.toLowerCase().includes(s))
+}
+function render(){
+ let rows=filtered(),m=$("monthFilter").value;
+ $("salesBody").innerHTML=rows.length?rows.map(x=>`<tr><td>${x.date}</td><td><span class="badge">${esc(x.customer)}</span></td><td>${x.q5}</td><td>${x.q3}</td><td>${x.totalQty}</td><td>${rupiah(x.total)}</td><td><button class="btn danger" style="padding:6px 9px" onclick="delSale(${x.id})">Hapus</button></td></tr>`).join(""):'<tr><td colspan="7" class="empty">Belum ada penjualan pada periode ini.</td></tr>';
+ let ex=expenses.filter(x=>!m||x.date.startsWith(m));
+ $("expBody").innerHTML=ex.length?ex.map(x=>`<tr><td>${x.date}</td><td>${esc(x.note)}</td><td>${rupiah(x.amount)}</td><td><button class="btn danger" style="padding:6px 9px" onclick="delExp(${x.id})">Hapus</button></td></tr>`).join(""):'<tr><td colspan="4" class="empty">Belum ada pengeluaran pada periode ini.</td></tr>';
+ let all=sales,q5=all.reduce((a,x)=>a+x.q5,0),q3=all.reduce((a,x)=>a+x.q3,0),income=all.reduce((a,x)=>a+x.total,0),exp=expenses.reduce((a,x)=>a+x.amount,0);
+ $("sQty").textContent=q5+q3;$("s5").textContent=q5;$("s3").textContent=q3;$("sIncome").textContent=rupiah(income);$("sNet").textContent=rupiah(income-exp);
+ let mq5=rows.reduce((a,x)=>a+x.q5,0),mq3=rows.reduce((a,x)=>a+x.q3,0),mi=rows.reduce((a,x)=>a+x.total,0),me=ex.reduce((a,x)=>a+x.amount,0);
+ $("m5").textContent=mq5;$("m3").textContent=mq3;$("mIncome").textContent=rupiah(mi);$("mExp").textContent=rupiah(me);
+ $("sNet").className="num "+(income-exp>=0?"greenText":"redText");
+}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function cell(v){return `"${String(v??"").replaceAll('"','""')}"`}
+function dl(name,rows){let csv=rows.map(r=>r.map(cell).join(",")).join("\n"),b=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function reportRows(){
+ let m=$("monthFilter").value,ss=sales.filter(x=>!m||x.date.startsWith(m)),ee=expenses.filter(x=>!m||x.date.startsWith(m));
+ let q5=ss.reduce((a,x)=>a+x.q5,0),q3=ss.reduce((a,x)=>a+x.q3,0),inc=ss.reduce((a,x)=>a+x.total,0),ex=ee.reduce((a,x)=>a+x.amount,0),r=[["REKAP VOUCHER",m||"Semua periode"],["Voucher 5K",q5],["Voucher 3K",q3],["Total Voucher",q5+q3],["Total Pendapatan",inc],["Total Pengeluaran",ex],["Sisa Bersih",inc-ex],[],["DETAIL PENJUALAN"],["Tanggal","Customer","Voucher 5K","Voucher 3K","Total Voucher","Pendapatan"]];
+ ss.forEach(x=>r.push([x.date,x.customer,x.q5,x.q3,x.totalQty,x.total]));r.push([],["DETAIL PENGELUARAN"],["Tanggal","Keterangan","Jumlah"]);ee.forEach(x=>r.push([x.date,x.note,x.amount]));return r;
+}
+function downloadFull(){dl("rekap-voucher-lengkap-"+($("monthFilter").value||"semua")+".csv",reportRows())}
+function downloadSales(){let m=$("monthFilter").value,ss=sales.filter(x=>!m||x.date.startsWith(m));dl("penjualan-voucher-"+(m||"semua")+".csv",[["Tanggal","Customer","Voucher 5K","Voucher 3K","Total Voucher","Pendapatan"],...ss.map(x=>[x.date,x.customer,x.q5,x.q3,x.totalQty,x.total])])}
+function downloadExpenses(){let m=$("monthFilter").value,ee=expenses.filter(x=>!m||x.date.startsWith(m));dl("pengeluaran-"+(m||"semua")+".csv",[["Tanggal","Keterangan","Jumlah"],...ee.map(x=>[x.date,x.note,x.amount])])}
+if(sessionStorage.logged==="1")show();
+</script>
+</body></html>
