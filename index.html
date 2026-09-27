@@ -65,7 +65,23 @@ main{max-width:1250px;margin:auto;padding:22px}.grid{display:grid;grid-template-
 <div class="table"><table><thead><tr><th>Tanggal</th><th>Customer</th><th>5K</th><th>3K</th><th>Bulanan</th><th>Total</th><th>Pendapatan</th><th>Aksi</th></tr></thead><tbody id="sales"></tbody></table></div></section><section class="panel"><h2>🧮 Pengeluaran Bulanan</h2><div class="table"><table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Jumlah</th><th>Aksi</th></tr></thead><tbody id="expenses"></tbody></table></div></section><section class="panel"><h2>📥 Download Laporan</h2><p class="small">CSV laporan bulanan berisi detail penjualan, detail pengeluaran, total pendapatan, total pengeluaran, dan <b>total hasil bersih</b>.</p><div class="actions"><button class="btn g" onclick="downloadFull()">Download Laporan Bulanan Lengkap</button><button class="btn s" onclick="downloadSales()">Download Penjualan</button><button class="btn s" onclick="downloadExpenses()">Download Pengeluaran</button></div></section></div>
 </main></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
+
+const SUPABASE_URL = "https://wzixpqlqmrfnyeifjcto.supabase.co";
+
+const SUPABASE_KEY = "sb_publishable_K9CzYG22Twyj45tmv0mlPQ_FdJL2";
+
+const supabaseClient = window.supabase.createClient(
+
+  SUPABASE_URL,
+
+  SUPABASE_KEY
+
+);
+
+</script><script>
 const KS="rv_final_sales",KE="rv_final_exp",KC="rv_final_customers",P5=4500,P3=2500,PM=50000;
 let sales=JSON.parse(localStorage.getItem(KS)||"[]"),exps=JSON.parse(localStorage.getItem(KE)||"[]"),customers=JSON.parse(localStorage.getItem(KC)||"[]");
 const $=x=>document.getElementById(x), today=()=>new Date().toISOString().slice(0,10);
