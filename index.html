@@ -150,7 +150,85 @@ async function sale(){
 
   if(userError||!user) return alert("Sesi login Supabase belum aktif.");
 
-  const row={
+  const rows=[];
+
+  if(a>0){
+
+    rows.push({
+
+      id:Date.now(),
+
+      user_id:user.id,
+
+      costumer_id:c,
+
+      voucher_type_id:6,
+
+      tanggal:d,
+
+      jumlah:a,
+
+      harga:4500,
+
+      keterangan:"Voucher 5000"
+
+    });
+
+  }
+
+  if(b>0){
+
+    rows.push({
+
+      id:Date.now()+1,
+
+      user_id:user.id,
+
+      costumer_id:c,
+
+      voucher_type_id:5,
+
+      tanggal:d,
+
+      jumlah:b,
+
+      harga:2500,
+
+      keterangan:"Voucher 3000"
+
+    });
+
+  }
+
+  if(m>0){
+
+    rows.push({
+
+      id:Date.now()+2,
+
+      user_id:user.id,
+
+      costumer_id:c,
+
+      voucher_type_id:1,
+
+      tanggal:d,
+
+      jumlah:m,
+
+      harga:50000,
+
+      keterangan:"Voucher Bulanan"
+
+    });
+
+  }
+
+  const {error}=await supabaseClient.from("sales").insert(rows);
+
+  if(error) return alert("Gagal menyimpan penjualan: "+error.message);
+
+  sales.push({
 
     id:Date.now(),
 
@@ -168,15 +246,9 @@ async function sale(){
 
     totalQty:a+b+m,
 
-    total:a*P5+b*P3+m*PM
+    total:a*4500+b*2500+m*50000
 
-  };
-
-  const {error}=await supabaseClient.from("sales").insert(row);
-
-  if(error) return alert("Gagal menyimpan penjualan: "+error.message);
-
-  sales.push(row);
+  });
 
   save();
 
